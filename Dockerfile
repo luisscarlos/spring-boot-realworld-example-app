@@ -1,4 +1,4 @@
-FROM gradle:jdk-alpine
+FROM gradle:6.6.1-jdk11-hotspot
 
 WORKDIR /home/gradle/project
 
@@ -6,14 +6,13 @@ EXPOSE 8080
 
 USER root
 
-RUN apk update
+# RUN apk update
 
 ENV GRADLE_USER_HOME /home/gradle/project
 
 COPY . /home/gradle/project
 
-RUN gradle build
-
+RUN gradle build -x test
 
 FROM java:jre-alpine
 
