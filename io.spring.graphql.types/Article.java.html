@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Article.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.graphql.types</a> &gt; <span class="el_source">Article.java</span></div><h1>Article.java</h1><pre class="source lang-java linenums">package io.spring.graphql.types;
+
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
+import java.util.List;
+
+public class Article {
+  private Profile author;
+
+  private String body;
+
+  private CommentsConnection comments;
+
+  private String createdAt;
+
+  private String description;
+
+  private boolean favorited;
+
+  private int favoritesCount;
+
+  private String slug;
+
+  private List&lt;String&gt; tagList;
+
+  private String title;
+
+  private String updatedAt;
+
+<span class="nc" id="L31">  public Article() {</span>
+<span class="nc" id="L32">  }</span>
+
+  public Article(Profile author, String body, CommentsConnection comments, String createdAt,
+      String description, boolean favorited, int favoritesCount, String slug, List&lt;String&gt; tagList,
+<span class="nc" id="L36">      String title, String updatedAt) {</span>
+<span class="nc" id="L37">    this.author = author;</span>
+<span class="nc" id="L38">    this.body = body;</span>
+<span class="nc" id="L39">    this.comments = comments;</span>
+<span class="nc" id="L40">    this.createdAt = createdAt;</span>
+<span class="nc" id="L41">    this.description = description;</span>
+<span class="nc" id="L42">    this.favorited = favorited;</span>
+<span class="nc" id="L43">    this.favoritesCount = favoritesCount;</span>
+<span class="nc" id="L44">    this.slug = slug;</span>
+<span class="nc" id="L45">    this.tagList = tagList;</span>
+<span class="nc" id="L46">    this.title = title;</span>
+<span class="nc" id="L47">    this.updatedAt = updatedAt;</span>
+<span class="nc" id="L48">  }</span>
+
+  public Profile getAuthor() {
+<span class="nc" id="L51">    return author;</span>
+  }
+
+  public void setAuthor(Profile author) {
+<span class="nc" id="L55">    this.author = author;</span>
+<span class="nc" id="L56">  }</span>
+
+  public String getBody() {
+<span class="nc" id="L59">    return body;</span>
+  }
+
+  public void setBody(String body) {
+<span class="nc" id="L63">    this.body = body;</span>
+<span class="nc" id="L64">  }</span>
+
+  public CommentsConnection getComments() {
+<span class="nc" id="L67">    return comments;</span>
+  }
+
+  public void setComments(CommentsConnection comments) {
+<span class="nc" id="L71">    this.comments = comments;</span>
+<span class="nc" id="L72">  }</span>
+
+  public String getCreatedAt() {
+<span class="nc" id="L75">    return createdAt;</span>
+  }
+
+  public void setCreatedAt(String createdAt) {
+<span class="nc" id="L79">    this.createdAt = createdAt;</span>
+<span class="nc" id="L80">  }</span>
+
+  public String getDescription() {
+<span class="nc" id="L83">    return description;</span>
+  }
+
+  public void setDescription(String description) {
+<span class="nc" id="L87">    this.description = description;</span>
+<span class="nc" id="L88">  }</span>
+
+  public boolean getFavorited() {
+<span class="nc" id="L91">    return favorited;</span>
+  }
+
+  public void setFavorited(boolean favorited) {
+<span class="nc" id="L95">    this.favorited = favorited;</span>
+<span class="nc" id="L96">  }</span>
+
+  public int getFavoritesCount() {
+<span class="nc" id="L99">    return favoritesCount;</span>
+  }
+
+  public void setFavoritesCount(int favoritesCount) {
+<span class="nc" id="L103">    this.favoritesCount = favoritesCount;</span>
+<span class="nc" id="L104">  }</span>
+
+  public String getSlug() {
+<span class="nc" id="L107">    return slug;</span>
+  }
+
+  public void setSlug(String slug) {
+<span class="nc" id="L111">    this.slug = slug;</span>
+<span class="nc" id="L112">  }</span>
+
+  public List&lt;String&gt; getTagList() {
+<span class="nc" id="L115">    return tagList;</span>
+  }
+
+  public void setTagList(List&lt;String&gt; tagList) {
+<span class="nc" id="L119">    this.tagList = tagList;</span>
+<span class="nc" id="L120">  }</span>
+
+  public String getTitle() {
+<span class="nc" id="L123">    return title;</span>
+  }
+
+  public void setTitle(String title) {
+<span class="nc" id="L127">    this.title = title;</span>
+<span class="nc" id="L128">  }</span>
+
+  public String getUpdatedAt() {
+<span class="nc" id="L131">    return updatedAt;</span>
+  }
+
+  public void setUpdatedAt(String updatedAt) {
+<span class="nc" id="L135">    this.updatedAt = updatedAt;</span>
+<span class="nc" id="L136">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L140">    return &quot;Article{&quot; + &quot;author='&quot; + author + &quot;',&quot; +&quot;body='&quot; + body + &quot;',&quot; +&quot;comments='&quot; + comments + &quot;',&quot; +&quot;createdAt='&quot; + createdAt + &quot;',&quot; +&quot;description='&quot; + description + &quot;',&quot; +&quot;favorited='&quot; + favorited + &quot;',&quot; +&quot;favoritesCount='&quot; + favoritesCount + &quot;',&quot; +&quot;slug='&quot; + slug + &quot;',&quot; +&quot;tagList='&quot; + tagList + &quot;',&quot; +&quot;title='&quot; + title + &quot;',&quot; +&quot;updatedAt='&quot; + updatedAt + &quot;'&quot; +&quot;}&quot;;</span>
+  }
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L145" title="All 2 branches missed.">    if (this == o) return true;</span>
+<span class="nc bnc" id="L146" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="nc" id="L147">        Article that = (Article) o;</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        return java.util.Objects.equals(author, that.author) &amp;&amp;</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">                            java.util.Objects.equals(body, that.body) &amp;&amp;</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">                            java.util.Objects.equals(comments, that.comments) &amp;&amp;</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">                            java.util.Objects.equals(createdAt, that.createdAt) &amp;&amp;</span>
+<span class="nc bnc" id="L152" title="All 6 branches missed.">                            java.util.Objects.equals(description, that.description) &amp;&amp;</span>
+                            favorited == that.favorited &amp;&amp;
+                            favoritesCount == that.favoritesCount &amp;&amp;
+<span class="nc bnc" id="L155" title="All 2 branches missed.">                            java.util.Objects.equals(slug, that.slug) &amp;&amp;</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">                            java.util.Objects.equals(tagList, that.tagList) &amp;&amp;</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">                            java.util.Objects.equals(title, that.title) &amp;&amp;</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">                            java.util.Objects.equals(updatedAt, that.updatedAt);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L163">    return java.util.Objects.hash(author, body, comments, createdAt, description, favorited, favoritesCount, slug, tagList, title, updatedAt);</span>
+  }
+
+  public static io.spring.graphql.types.Article.Builder newBuilder() {
+<span class="nc" id="L167">    return new Builder();</span>
+  }
+
+<span class="nc" id="L170">  public static class Builder {</span>
+    private Profile author;
+
+    private String body;
+
+    private CommentsConnection comments;
+
+    private String createdAt;
+
+    private String description;
+
+    private boolean favorited;
+
+    private int favoritesCount;
+
+    private String slug;
+
+    private List&lt;String&gt; tagList;
+
+    private String title;
+
+    private String updatedAt;
+
+    public Article build() {
+<span class="nc" id="L194">                  io.spring.graphql.types.Article result = new io.spring.graphql.types.Article();</span>
+<span class="nc" id="L195">                      result.author = this.author;</span>
+<span class="nc" id="L196">          result.body = this.body;</span>
+<span class="nc" id="L197">          result.comments = this.comments;</span>
+<span class="nc" id="L198">          result.createdAt = this.createdAt;</span>
+<span class="nc" id="L199">          result.description = this.description;</span>
+<span class="nc" id="L200">          result.favorited = this.favorited;</span>
+<span class="nc" id="L201">          result.favoritesCount = this.favoritesCount;</span>
+<span class="nc" id="L202">          result.slug = this.slug;</span>
+<span class="nc" id="L203">          result.tagList = this.tagList;</span>
+<span class="nc" id="L204">          result.title = this.title;</span>
+<span class="nc" id="L205">          result.updatedAt = this.updatedAt;</span>
+<span class="nc" id="L206">                      return result;</span>
+    }
+
+    public io.spring.graphql.types.Article.Builder author(Profile author) {
+<span class="nc" id="L210">      this.author = author;</span>
+<span class="nc" id="L211">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Article.Builder body(String body) {
+<span class="nc" id="L215">      this.body = body;</span>
+<span class="nc" id="L216">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Article.Builder comments(CommentsConnection comments) {
+<span class="nc" id="L220">      this.comments = comments;</span>
+<span class="nc" id="L221">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Article.Builder createdAt(String createdAt) {
+<span class="nc" id="L225">      this.createdAt = createdAt;</span>
+<span class="nc" id="L226">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Article.Builder description(String description) {
+<span class="nc" id="L230">      this.description = description;</span>
+<span class="nc" id="L231">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Article.Builder favorited(boolean favorited) {
+<span class="nc" id="L235">      this.favorited = favorited;</span>
+<span class="nc" id="L236">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Article.Builder favoritesCount(int favoritesCount) {
+<span class="nc" id="L240">      this.favoritesCount = favoritesCount;</span>
+<span class="nc" id="L241">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Article.Builder slug(String slug) {
+<span class="nc" id="L245">      this.slug = slug;</span>
+<span class="nc" id="L246">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Article.Builder tagList(List&lt;String&gt; tagList) {
+<span class="nc" id="L250">      this.tagList = tagList;</span>
+<span class="nc" id="L251">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Article.Builder title(String title) {
+<span class="nc" id="L255">      this.title = title;</span>
+<span class="nc" id="L256">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Article.Builder updatedAt(String updatedAt) {
+<span class="nc" id="L260">      this.updatedAt = updatedAt;</span>
+<span class="nc" id="L261">      return this;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

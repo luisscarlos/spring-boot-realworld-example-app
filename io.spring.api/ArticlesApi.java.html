@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ArticlesApi.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.api</a> &gt; <span class="el_source">ArticlesApi.java</span></div><h1>ArticlesApi.java</h1><pre class="source lang-java linenums">package io.spring.api;
+
+import io.spring.application.ArticleQueryService;
+import io.spring.application.Page;
+import io.spring.application.article.ArticleCommandService;
+import io.spring.application.article.NewArticleParam;
+import io.spring.core.article.Article;
+import io.spring.core.user.User;
+import java.util.HashMap;
+import javax.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(path = &quot;/articles&quot;)
+<span class="fc" id="L23">@AllArgsConstructor</span>
+public class ArticlesApi {
+  private ArticleCommandService articleCommandService;
+  private ArticleQueryService articleQueryService;
+
+  @PostMapping
+  public ResponseEntity createArticle(
+      @Valid @RequestBody NewArticleParam newArticleParam, @AuthenticationPrincipal User user) {
+<span class="fc" id="L31">    Article article = articleCommandService.createArticle(newArticleParam, user);</span>
+<span class="fc" id="L32">    return ResponseEntity.ok(</span>
+<span class="fc" id="L33">        new HashMap&lt;String, Object&gt;() {</span>
+          {
+<span class="fc" id="L35">            put(&quot;article&quot;, articleQueryService.findById(article.getId(), user).get());</span>
+<span class="fc" id="L36">          }</span>
+        });
+  }
+
+  @GetMapping(path = &quot;feed&quot;)
+  public ResponseEntity getFeed(
+      @RequestParam(value = &quot;offset&quot;, defaultValue = &quot;0&quot;) int offset,
+      @RequestParam(value = &quot;limit&quot;, defaultValue = &quot;20&quot;) int limit,
+      @AuthenticationPrincipal User user) {
+<span class="fc" id="L45">    return ResponseEntity.ok(articleQueryService.findUserFeed(user, new Page(offset, limit)));</span>
+  }
+
+  @GetMapping
+  public ResponseEntity getArticles(
+      @RequestParam(value = &quot;offset&quot;, defaultValue = &quot;0&quot;) int offset,
+      @RequestParam(value = &quot;limit&quot;, defaultValue = &quot;20&quot;) int limit,
+      @RequestParam(value = &quot;tag&quot;, required = false) String tag,
+      @RequestParam(value = &quot;favorited&quot;, required = false) String favoritedBy,
+      @RequestParam(value = &quot;author&quot;, required = false) String author,
+      @AuthenticationPrincipal User user) {
+<span class="fc" id="L56">    return ResponseEntity.ok(</span>
+<span class="fc" id="L57">        articleQueryService.findRecentArticles(</span>
+            tag, author, favoritedBy, new Page(offset, limit), user));
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

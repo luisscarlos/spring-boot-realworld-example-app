@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CreateArticleInput.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.graphql.types</a> &gt; <span class="el_source">CreateArticleInput.java</span></div><h1>CreateArticleInput.java</h1><pre class="source lang-java linenums">package io.spring.graphql.types;
+
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
+import java.util.List;
+
+public class CreateArticleInput {
+  private String body;
+
+  private String description;
+
+  private List&lt;String&gt; tagList;
+
+  private String title;
+
+<span class="nc" id="L17">  public CreateArticleInput() {</span>
+<span class="nc" id="L18">  }</span>
+
+<span class="nc" id="L20">  public CreateArticleInput(String body, String description, List&lt;String&gt; tagList, String title) {</span>
+<span class="nc" id="L21">    this.body = body;</span>
+<span class="nc" id="L22">    this.description = description;</span>
+<span class="nc" id="L23">    this.tagList = tagList;</span>
+<span class="nc" id="L24">    this.title = title;</span>
+<span class="nc" id="L25">  }</span>
+
+  public String getBody() {
+<span class="nc" id="L28">    return body;</span>
+  }
+
+  public void setBody(String body) {
+<span class="nc" id="L32">    this.body = body;</span>
+<span class="nc" id="L33">  }</span>
+
+  public String getDescription() {
+<span class="nc" id="L36">    return description;</span>
+  }
+
+  public void setDescription(String description) {
+<span class="nc" id="L40">    this.description = description;</span>
+<span class="nc" id="L41">  }</span>
+
+  public List&lt;String&gt; getTagList() {
+<span class="nc" id="L44">    return tagList;</span>
+  }
+
+  public void setTagList(List&lt;String&gt; tagList) {
+<span class="nc" id="L48">    this.tagList = tagList;</span>
+<span class="nc" id="L49">  }</span>
+
+  public String getTitle() {
+<span class="nc" id="L52">    return title;</span>
+  }
+
+  public void setTitle(String title) {
+<span class="nc" id="L56">    this.title = title;</span>
+<span class="nc" id="L57">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L61">    return &quot;CreateArticleInput{&quot; + &quot;body='&quot; + body + &quot;',&quot; +&quot;description='&quot; + description + &quot;',&quot; +&quot;tagList='&quot; + tagList + &quot;',&quot; +&quot;title='&quot; + title + &quot;'&quot; +&quot;}&quot;;</span>
+  }
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    if (this == o) return true;</span>
+<span class="nc bnc" id="L67" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="nc" id="L68">        CreateArticleInput that = (CreateArticleInput) o;</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        return java.util.Objects.equals(body, that.body) &amp;&amp;</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">                            java.util.Objects.equals(description, that.description) &amp;&amp;</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">                            java.util.Objects.equals(tagList, that.tagList) &amp;&amp;</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">                            java.util.Objects.equals(title, that.title);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L77">    return java.util.Objects.hash(body, description, tagList, title);</span>
+  }
+
+  public static io.spring.graphql.types.CreateArticleInput.Builder newBuilder() {
+<span class="nc" id="L81">    return new Builder();</span>
+  }
+
+<span class="nc" id="L84">  public static class Builder {</span>
+    private String body;
+
+    private String description;
+
+    private List&lt;String&gt; tagList;
+
+    private String title;
+
+    public CreateArticleInput build() {
+<span class="nc" id="L94">                  io.spring.graphql.types.CreateArticleInput result = new io.spring.graphql.types.CreateArticleInput();</span>
+<span class="nc" id="L95">                      result.body = this.body;</span>
+<span class="nc" id="L96">          result.description = this.description;</span>
+<span class="nc" id="L97">          result.tagList = this.tagList;</span>
+<span class="nc" id="L98">          result.title = this.title;</span>
+<span class="nc" id="L99">                      return result;</span>
+    }
+
+    public io.spring.graphql.types.CreateArticleInput.Builder body(String body) {
+<span class="nc" id="L103">      this.body = body;</span>
+<span class="nc" id="L104">      return this;</span>
+    }
+
+    public io.spring.graphql.types.CreateArticleInput.Builder description(String description) {
+<span class="nc" id="L108">      this.description = description;</span>
+<span class="nc" id="L109">      return this;</span>
+    }
+
+    public io.spring.graphql.types.CreateArticleInput.Builder tagList(List&lt;String&gt; tagList) {
+<span class="nc" id="L113">      this.tagList = tagList;</span>
+<span class="nc" id="L114">      return this;</span>
+    }
+
+    public io.spring.graphql.types.CreateArticleInput.Builder title(String title) {
+<span class="nc" id="L118">      this.title = title;</span>
+<span class="nc" id="L119">      return this;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

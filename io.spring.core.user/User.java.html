@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.core.user</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package io.spring.core.user;
+
+import io.spring.Util;
+import java.util.UUID;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+<span class="fc" id="L10">@NoArgsConstructor</span>
+<span class="pc bpc" id="L11" title="7 of 14 branches missed.">@EqualsAndHashCode(of = {&quot;id&quot;})</span>
+public class User {
+<span class="fc" id="L13">  private String id;</span>
+<span class="fc" id="L14">  private String email;</span>
+<span class="fc" id="L15">  private String username;</span>
+<span class="fc" id="L16">  private String password;</span>
+<span class="fc" id="L17">  private String bio;</span>
+<span class="fc" id="L18">  private String image;</span>
+
+<span class="fc" id="L20">  public User(String email, String username, String password, String bio, String image) {</span>
+<span class="fc" id="L21">    this.id = UUID.randomUUID().toString();</span>
+<span class="fc" id="L22">    this.email = email;</span>
+<span class="fc" id="L23">    this.username = username;</span>
+<span class="fc" id="L24">    this.password = password;</span>
+<span class="fc" id="L25">    this.bio = bio;</span>
+<span class="fc" id="L26">    this.image = image;</span>
+<span class="fc" id="L27">  }</span>
+
+  public void update(String email, String username, String password, String bio, String image) {
+<span class="fc bfc" id="L30" title="All 2 branches covered.">    if (!Util.isEmpty(email)) {</span>
+<span class="fc" id="L31">      this.email = email;</span>
+    }
+
+<span class="fc bfc" id="L34" title="All 2 branches covered.">    if (!Util.isEmpty(username)) {</span>
+<span class="fc" id="L35">      this.username = username;</span>
+    }
+
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">    if (!Util.isEmpty(password)) {</span>
+<span class="nc" id="L39">      this.password = password;</span>
+    }
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">    if (!Util.isEmpty(bio)) {</span>
+<span class="fc" id="L43">      this.bio = bio;</span>
+    }
+
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">    if (!Util.isEmpty(image)) {</span>
+<span class="nc" id="L47">      this.image = image;</span>
+    }
+<span class="fc" id="L49">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

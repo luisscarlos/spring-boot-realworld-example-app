@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MeDatafetcher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.graphql</a> &gt; <span class="el_source">MeDatafetcher.java</span></div><h1>MeDatafetcher.java</h1><pre class="source lang-java linenums">package io.spring.graphql;
+
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsData;
+import graphql.execution.DataFetcherResult;
+import graphql.schema.DataFetchingEnvironment;
+import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.UserQueryService;
+import io.spring.application.data.UserData;
+import io.spring.application.data.UserWithToken;
+import io.spring.core.service.JwtService;
+import io.spring.graphql.DgsConstants.QUERY;
+import io.spring.graphql.DgsConstants.USERPAYLOAD;
+import io.spring.graphql.types.User;
+import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.RequestHeader;
+
+@DgsComponent
+<span class="fc" id="L22">@AllArgsConstructor</span>
+public class MeDatafetcher {
+  private UserQueryService userQueryService;
+  private JwtService jwtService;
+
+  @DgsData(parentType = DgsConstants.QUERY_TYPE, field = QUERY.Me)
+  public DataFetcherResult&lt;User&gt; getMe(
+      @RequestHeader(value = &quot;Authorization&quot;) String authorization,
+      DataFetchingEnvironment dataFetchingEnvironment) {
+<span class="nc" id="L31">    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">    if (authentication instanceof AnonymousAuthenticationToken</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        || authentication.getPrincipal() == null) {</span>
+<span class="nc" id="L34">      return null;</span>
+    }
+<span class="nc" id="L36">    io.spring.core.user.User user = (io.spring.core.user.User) authentication.getPrincipal();</span>
+<span class="nc" id="L37">    UserData userData =</span>
+<span class="nc" id="L38">        userQueryService.findById(user.getId()).orElseThrow(ResourceNotFoundException::new);</span>
+<span class="nc" id="L39">    UserWithToken userWithToken = new UserWithToken(userData, authorization.split(&quot; &quot;)[1]);</span>
+    User result =
+<span class="nc" id="L41">        User.newBuilder()</span>
+<span class="nc" id="L42">            .email(userWithToken.getEmail())</span>
+<span class="nc" id="L43">            .username(userWithToken.getUsername())</span>
+<span class="nc" id="L44">            .token(userWithToken.getToken())</span>
+<span class="nc" id="L45">            .build();</span>
+<span class="nc" id="L46">    return DataFetcherResult.&lt;User&gt;newResult().data(result).localContext(user).build();</span>
+  }
+
+  @DgsData(parentType = USERPAYLOAD.TYPE_NAME, field = USERPAYLOAD.User)
+  public DataFetcherResult&lt;User&gt; getUserPayloadUser(
+      DataFetchingEnvironment dataFetchingEnvironment) {
+<span class="nc" id="L52">    io.spring.core.user.User user = dataFetchingEnvironment.getLocalContext();</span>
+    User result =
+<span class="nc" id="L54">        User.newBuilder()</span>
+<span class="nc" id="L55">            .email(user.getEmail())</span>
+<span class="nc" id="L56">            .username(user.getUsername())</span>
+<span class="nc" id="L57">            .token(jwtService.toToken(user))</span>
+<span class="nc" id="L58">            .build();</span>
+<span class="nc" id="L59">    return DataFetcherResult.&lt;User&gt;newResult().data(result).localContext(user).build();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

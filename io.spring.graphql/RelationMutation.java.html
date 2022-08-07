@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RelationMutation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.graphql</a> &gt; <span class="el_source">RelationMutation.java</span></div><h1>RelationMutation.java</h1><pre class="source lang-java linenums">package io.spring.graphql;
+
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsData;
+import com.netflix.graphql.dgs.InputArgument;
+import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.ProfileQueryService;
+import io.spring.application.data.ProfileData;
+import io.spring.core.user.FollowRelation;
+import io.spring.core.user.User;
+import io.spring.core.user.UserRepository;
+import io.spring.graphql.DgsConstants.MUTATION;
+import io.spring.graphql.exception.AuthenticationException;
+import io.spring.graphql.types.Profile;
+import io.spring.graphql.types.ProfilePayload;
+import lombok.AllArgsConstructor;
+
+@DgsComponent
+<span class="fc" id="L19">@AllArgsConstructor</span>
+public class RelationMutation {
+
+  private UserRepository userRepository;
+  private ProfileQueryService profileQueryService;
+
+  @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.FollowUser)
+  public ProfilePayload follow(@InputArgument(&quot;username&quot;) String username) {
+<span class="nc" id="L27">    User user = SecurityUtil.getCurrentUser().orElseThrow(AuthenticationException::new);</span>
+<span class="nc" id="L28">    return userRepository</span>
+<span class="nc" id="L29">        .findByUsername(username)</span>
+<span class="nc" id="L30">        .map(</span>
+            target -&gt; {
+<span class="nc" id="L32">              FollowRelation followRelation = new FollowRelation(user.getId(), target.getId());</span>
+<span class="nc" id="L33">              userRepository.saveRelation(followRelation);</span>
+<span class="nc" id="L34">              Profile profile = buildProfile(username, user);</span>
+<span class="nc" id="L35">              return ProfilePayload.newBuilder().profile(profile).build();</span>
+            })
+<span class="nc" id="L37">        .orElseThrow(ResourceNotFoundException::new);</span>
+  }
+
+  @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.UnfollowUser)
+  public ProfilePayload unfollow(@InputArgument(&quot;username&quot;) String username) {
+<span class="nc" id="L42">    User user = SecurityUtil.getCurrentUser().orElseThrow(AuthenticationException::new);</span>
+<span class="nc" id="L43">    User target =</span>
+<span class="nc" id="L44">        userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);</span>
+<span class="nc" id="L45">    return userRepository</span>
+<span class="nc" id="L46">        .findRelation(user.getId(), target.getId())</span>
+<span class="nc" id="L47">        .map(</span>
+            relation -&gt; {
+<span class="nc" id="L49">              userRepository.removeRelation(relation);</span>
+<span class="nc" id="L50">              Profile profile = buildProfile(username, user);</span>
+<span class="nc" id="L51">              return ProfilePayload.newBuilder().profile(profile).build();</span>
+            })
+<span class="nc" id="L53">        .orElseThrow(ResourceNotFoundException::new);</span>
+  }
+
+  private Profile buildProfile(@InputArgument(&quot;username&quot;) String username, User current) {
+<span class="nc" id="L57">    ProfileData profileData = profileQueryService.findByUsername(username, current).get();</span>
+<span class="nc" id="L58">    return Profile.newBuilder()</span>
+<span class="nc" id="L59">        .username(profileData.getUsername())</span>
+<span class="nc" id="L60">        .bio(profileData.getBio())</span>
+<span class="nc" id="L61">        .image(profileData.getImage())</span>
+<span class="nc" id="L62">        .following(profileData.isFollowing())</span>
+<span class="nc" id="L63">        .build();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

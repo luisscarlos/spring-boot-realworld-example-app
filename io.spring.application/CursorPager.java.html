@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CursorPager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.application</a> &gt; <span class="el_source">CursorPager.java</span></div><h1>CursorPager.java</h1><pre class="source lang-java linenums">package io.spring.application;
+
+import java.util.List;
+import lombok.Getter;
+
+@Getter
+public class CursorPager&lt;T extends Node&gt; {
+<span class="fc" id="L8">  private List&lt;T&gt; data;</span>
+<span class="nc" id="L9">  private boolean next;</span>
+<span class="nc" id="L10">  private boolean previous;</span>
+
+<span class="fc" id="L12">  public CursorPager(List&lt;T&gt; data, Direction direction, boolean hasExtra) {</span>
+<span class="fc" id="L13">    this.data = data;</span>
+
+<span class="fc bfc" id="L15" title="All 2 branches covered.">    if (direction == Direction.NEXT) {</span>
+<span class="fc" id="L16">      this.previous = false;</span>
+<span class="fc" id="L17">      this.next = hasExtra;</span>
+    } else {
+<span class="fc" id="L19">      this.next = false;</span>
+<span class="fc" id="L20">      this.previous = hasExtra;</span>
+    }
+<span class="fc" id="L22">  }</span>
+
+  public boolean hasNext() {
+<span class="nc" id="L25">    return next;</span>
+  }
+
+  public boolean hasPrevious() {
+<span class="nc" id="L29">    return previous;</span>
+  }
+
+  public PageCursor getStartCursor() {
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">    return data.isEmpty() ? null : data.get(0).getCursor();</span>
+  }
+
+  public PageCursor getEndCursor() {
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">    return data.isEmpty() ? null : data.get(data.size() - 1).getCursor();</span>
+  }
+
+<span class="fc" id="L40">  public enum Direction {</span>
+<span class="fc" id="L41">    PREV,</span>
+<span class="fc" id="L42">    NEXT</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

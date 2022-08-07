@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WebSecurityConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.api.security</a> &gt; <span class="el_source">WebSecurityConfig.java</span></div><h1>WebSecurityConfig.java</h1><pre class="source lang-java linenums">package io.spring.api.security;
+
+import static java.util.Arrays.asList;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+@Configuration
+@EnableWebSecurity
+<span class="fc" id="L23">public class WebSecurityConfig extends WebSecurityConfigurerAdapter {</span>
+
+  @Bean
+  public JwtTokenFilter jwtTokenFilter() {
+<span class="fc" id="L27">    return new JwtTokenFilter();</span>
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+<span class="fc" id="L32">    return new BCryptPasswordEncoder();</span>
+  }
+
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+
+<span class="fc" id="L38">    http.csrf()</span>
+<span class="fc" id="L39">        .disable()</span>
+<span class="fc" id="L40">        .cors()</span>
+<span class="fc" id="L41">        .and()</span>
+<span class="fc" id="L42">        .exceptionHandling()</span>
+<span class="fc" id="L43">        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))</span>
+<span class="fc" id="L44">        .and()</span>
+<span class="fc" id="L45">        .sessionManagement()</span>
+<span class="fc" id="L46">        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)</span>
+<span class="fc" id="L47">        .and()</span>
+<span class="fc" id="L48">        .authorizeRequests()</span>
+<span class="fc" id="L49">        .antMatchers(HttpMethod.OPTIONS)</span>
+<span class="fc" id="L50">        .permitAll()</span>
+<span class="fc" id="L51">        .antMatchers(&quot;/graphiql&quot;)</span>
+<span class="fc" id="L52">        .permitAll()</span>
+<span class="fc" id="L53">        .antMatchers(&quot;/graphql&quot;)</span>
+<span class="fc" id="L54">        .permitAll()</span>
+<span class="fc" id="L55">        .antMatchers(HttpMethod.GET, &quot;/articles/feed&quot;)</span>
+<span class="fc" id="L56">        .authenticated()</span>
+<span class="fc" id="L57">        .antMatchers(HttpMethod.POST, &quot;/users&quot;, &quot;/users/login&quot;)</span>
+<span class="fc" id="L58">        .permitAll()</span>
+<span class="fc" id="L59">        .antMatchers(HttpMethod.GET, &quot;/articles/**&quot;, &quot;/profiles/**&quot;, &quot;/tags&quot;)</span>
+<span class="fc" id="L60">        .permitAll()</span>
+<span class="fc" id="L61">        .anyRequest()</span>
+<span class="fc" id="L62">        .authenticated();</span>
+
+<span class="fc" id="L64">    http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);</span>
+<span class="fc" id="L65">  }</span>
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+<span class="fc" id="L69">    final CorsConfiguration configuration = new CorsConfiguration();</span>
+<span class="fc" id="L70">    configuration.setAllowedOrigins(asList(&quot;*&quot;));</span>
+<span class="fc" id="L71">    configuration.setAllowedMethods(asList(&quot;HEAD&quot;, &quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;, &quot;PATCH&quot;));</span>
+    // setAllowCredentials(true) is important, otherwise:
+    // The value of the 'Access-Control-Allow-Origin' header in the response must not be the
+    // wildcard '*' when the request's credentials mode is 'include'.
+<span class="fc" id="L75">    configuration.setAllowCredentials(false);</span>
+    // setAllowedHeaders is important! Without it, OPTIONS preflight request
+    // will fail with 403 Invalid CORS request
+<span class="fc" id="L78">    configuration.setAllowedHeaders(asList(&quot;Authorization&quot;, &quot;Cache-Control&quot;, &quot;Content-Type&quot;));</span>
+<span class="fc" id="L79">    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();</span>
+<span class="fc" id="L80">    source.registerCorsConfiguration(&quot;/**&quot;, configuration);</span>
+<span class="fc" id="L81">    return source;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

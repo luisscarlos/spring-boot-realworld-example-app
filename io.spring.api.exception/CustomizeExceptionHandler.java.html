@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomizeExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.api.exception</a> &gt; <span class="el_source">CustomizeExceptionHandler.java</span></div><h1>CustomizeExceptionHandler.java</h1><pre class="source lang-java linenums">package io.spring.api.exception;
+
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+@RestControllerAdvice
+<span class="fc" id="L25">public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {</span>
+
+  @ExceptionHandler({InvalidRequestException.class})
+  public ResponseEntity&lt;Object&gt; handleInvalidRequest(RuntimeException e, WebRequest request) {
+<span class="nc" id="L29">    InvalidRequestException ire = (InvalidRequestException) e;</span>
+
+<span class="nc" id="L31">    List&lt;FieldErrorResource&gt; errorResources =</span>
+<span class="nc" id="L32">        ire.getErrors().getFieldErrors().stream()</span>
+<span class="nc" id="L33">            .map(</span>
+                fieldError -&gt;
+<span class="nc" id="L35">                    new FieldErrorResource(</span>
+<span class="nc" id="L36">                        fieldError.getObjectName(),</span>
+<span class="nc" id="L37">                        fieldError.getField(),</span>
+<span class="nc" id="L38">                        fieldError.getCode(),</span>
+<span class="nc" id="L39">                        fieldError.getDefaultMessage()))</span>
+<span class="nc" id="L40">            .collect(Collectors.toList());</span>
+
+<span class="nc" id="L42">    ErrorResource error = new ErrorResource(errorResources);</span>
+
+<span class="nc" id="L44">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="nc" id="L45">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+
+<span class="nc" id="L47">    return handleExceptionInternal(e, error, headers, UNPROCESSABLE_ENTITY, request);</span>
+  }
+
+  @ExceptionHandler(InvalidAuthenticationException.class)
+  public ResponseEntity&lt;Object&gt; handleInvalidAuthentication(
+      InvalidAuthenticationException e, WebRequest request) {
+<span class="fc" id="L53">    return ResponseEntity.status(UNPROCESSABLE_ENTITY)</span>
+<span class="fc" id="L54">        .body(</span>
+<span class="fc" id="L55">            new HashMap&lt;String, Object&gt;() {</span>
+              {
+<span class="fc" id="L57">                put(&quot;message&quot;, e.getMessage());</span>
+<span class="fc" id="L58">              }</span>
+            });
+  }
+
+  @Override
+  protected ResponseEntity&lt;Object&gt; handleMethodArgumentNotValid(
+      MethodArgumentNotValidException e,
+      HttpHeaders headers,
+      HttpStatus status,
+      WebRequest request) {
+<span class="fc" id="L68">    List&lt;FieldErrorResource&gt; errorResources =</span>
+<span class="fc" id="L69">        e.getBindingResult().getFieldErrors().stream()</span>
+<span class="fc" id="L70">            .map(</span>
+                fieldError -&gt;
+<span class="fc" id="L72">                    new FieldErrorResource(</span>
+<span class="fc" id="L73">                        fieldError.getObjectName(),</span>
+<span class="fc" id="L74">                        fieldError.getField(),</span>
+<span class="fc" id="L75">                        fieldError.getCode(),</span>
+<span class="fc" id="L76">                        fieldError.getDefaultMessage()))</span>
+<span class="fc" id="L77">            .collect(Collectors.toList());</span>
+
+<span class="fc" id="L79">    return ResponseEntity.status(UNPROCESSABLE_ENTITY).body(new ErrorResource(errorResources));</span>
+  }
+
+  @ExceptionHandler({ConstraintViolationException.class})
+  @ResponseStatus(UNPROCESSABLE_ENTITY)
+  @ResponseBody
+  public ErrorResource handleConstraintViolation(
+      ConstraintViolationException ex, WebRequest request) {
+<span class="fc" id="L87">    List&lt;FieldErrorResource&gt; errors = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">    for (ConstraintViolation&lt;?&gt; violation : ex.getConstraintViolations()) {</span>
+<span class="fc" id="L89">      FieldErrorResource fieldErrorResource =</span>
+          new FieldErrorResource(
+<span class="fc" id="L91">              violation.getRootBeanClass().getName(),</span>
+<span class="fc" id="L92">              getParam(violation.getPropertyPath().toString()),</span>
+<span class="fc" id="L93">              violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName(),</span>
+<span class="fc" id="L94">              violation.getMessage());</span>
+<span class="fc" id="L95">      errors.add(fieldErrorResource);</span>
+<span class="fc" id="L96">    }</span>
+
+<span class="fc" id="L98">    return new ErrorResource(errors);</span>
+  }
+
+  private String getParam(String s) {
+<span class="fc" id="L102">    String[] splits = s.split(&quot;\\.&quot;);</span>
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">    if (splits.length == 1) {</span>
+<span class="nc" id="L104">      return s;</span>
+    } else {
+<span class="fc" id="L106">      return String.join(&quot;.&quot;, Arrays.copyOfRange(splits, 2, splits.length));</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

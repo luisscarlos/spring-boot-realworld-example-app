@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ArticleApi.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.api</a> &gt; <span class="el_source">ArticleApi.java</span></div><h1>ArticleApi.java</h1><pre class="source lang-java linenums">package io.spring.api;
+
+import io.spring.api.exception.NoAuthorizationException;
+import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.ArticleQueryService;
+import io.spring.application.article.ArticleCommandService;
+import io.spring.application.article.UpdateArticleParam;
+import io.spring.application.data.ArticleData;
+import io.spring.core.article.Article;
+import io.spring.core.article.ArticleRepository;
+import io.spring.core.service.AuthorizationService;
+import io.spring.core.user.User;
+import java.util.HashMap;
+import java.util.Map;
+import javax.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(path = &quot;/articles/{slug}&quot;)
+<span class="fc" id="L29">@AllArgsConstructor</span>
+public class ArticleApi {
+  private ArticleQueryService articleQueryService;
+  private ArticleRepository articleRepository;
+  private ArticleCommandService articleCommandService;
+
+  @GetMapping
+  public ResponseEntity&lt;?&gt; article(
+      @PathVariable(&quot;slug&quot;) String slug, @AuthenticationPrincipal User user) {
+<span class="fc" id="L38">    return articleQueryService</span>
+<span class="fc" id="L39">        .findBySlug(slug, user)</span>
+<span class="fc" id="L40">        .map(articleData -&gt; ResponseEntity.ok(articleResponse(articleData)))</span>
+<span class="fc" id="L41">        .orElseThrow(ResourceNotFoundException::new);</span>
+  }
+
+  @PutMapping
+  public ResponseEntity&lt;?&gt; updateArticle(
+      @PathVariable(&quot;slug&quot;) String slug,
+      @AuthenticationPrincipal User user,
+      @Valid @RequestBody UpdateArticleParam updateArticleParam) {
+<span class="fc" id="L49">    return articleRepository</span>
+<span class="fc" id="L50">        .findBySlug(slug)</span>
+<span class="fc" id="L51">        .map(</span>
+            article -&gt; {
+<span class="fc bfc" id="L53" title="All 2 branches covered.">              if (!AuthorizationService.canWriteArticle(user, article)) {</span>
+<span class="fc" id="L54">                throw new NoAuthorizationException();</span>
+              }
+<span class="fc" id="L56">              Article updatedArticle =</span>
+<span class="fc" id="L57">                  articleCommandService.updateArticle(article, updateArticleParam);</span>
+<span class="fc" id="L58">              return ResponseEntity.ok(</span>
+<span class="fc" id="L59">                  articleResponse(</span>
+<span class="fc" id="L60">                      articleQueryService.findBySlug(updatedArticle.getSlug(), user).get()));</span>
+            })
+<span class="fc" id="L62">        .orElseThrow(ResourceNotFoundException::new);</span>
+  }
+
+  @DeleteMapping
+  public ResponseEntity deleteArticle(
+      @PathVariable(&quot;slug&quot;) String slug, @AuthenticationPrincipal User user) {
+<span class="fc" id="L68">    return articleRepository</span>
+<span class="fc" id="L69">        .findBySlug(slug)</span>
+<span class="fc" id="L70">        .map(</span>
+            article -&gt; {
+<span class="fc bfc" id="L72" title="All 2 branches covered.">              if (!AuthorizationService.canWriteArticle(user, article)) {</span>
+<span class="fc" id="L73">                throw new NoAuthorizationException();</span>
+              }
+<span class="fc" id="L75">              articleRepository.remove(article);</span>
+<span class="fc" id="L76">              return ResponseEntity.noContent().build();</span>
+            })
+<span class="fc" id="L78">        .orElseThrow(ResourceNotFoundException::new);</span>
+  }
+
+  private Map&lt;String, Object&gt; articleResponse(ArticleData articleData) {
+<span class="fc" id="L82">    return new HashMap&lt;String, Object&gt;() {</span>
+      {
+<span class="fc" id="L84">        put(&quot;article&quot;, articleData);</span>
+<span class="fc" id="L85">      }</span>
+    };
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

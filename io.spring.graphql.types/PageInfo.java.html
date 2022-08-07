@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PageInfo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.graphql.types</a> &gt; <span class="el_source">PageInfo.java</span></div><h1>PageInfo.java</h1><pre class="source lang-java linenums">package io.spring.graphql.types;
+
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
+
+public class PageInfo {
+  private String endCursor;
+
+  private boolean hasNextPage;
+
+  private boolean hasPreviousPage;
+
+  private String startCursor;
+
+<span class="nc" id="L16">  public PageInfo() {</span>
+<span class="nc" id="L17">  }</span>
+
+  public PageInfo(String endCursor, boolean hasNextPage, boolean hasPreviousPage,
+<span class="nc" id="L20">      String startCursor) {</span>
+<span class="nc" id="L21">    this.endCursor = endCursor;</span>
+<span class="nc" id="L22">    this.hasNextPage = hasNextPage;</span>
+<span class="nc" id="L23">    this.hasPreviousPage = hasPreviousPage;</span>
+<span class="nc" id="L24">    this.startCursor = startCursor;</span>
+<span class="nc" id="L25">  }</span>
+
+  public String getEndCursor() {
+<span class="nc" id="L28">    return endCursor;</span>
+  }
+
+  public void setEndCursor(String endCursor) {
+<span class="nc" id="L32">    this.endCursor = endCursor;</span>
+<span class="nc" id="L33">  }</span>
+
+  public boolean getHasNextPage() {
+<span class="nc" id="L36">    return hasNextPage;</span>
+  }
+
+  public void setHasNextPage(boolean hasNextPage) {
+<span class="nc" id="L40">    this.hasNextPage = hasNextPage;</span>
+<span class="nc" id="L41">  }</span>
+
+  public boolean getHasPreviousPage() {
+<span class="nc" id="L44">    return hasPreviousPage;</span>
+  }
+
+  public void setHasPreviousPage(boolean hasPreviousPage) {
+<span class="nc" id="L48">    this.hasPreviousPage = hasPreviousPage;</span>
+<span class="nc" id="L49">  }</span>
+
+  public String getStartCursor() {
+<span class="nc" id="L52">    return startCursor;</span>
+  }
+
+  public void setStartCursor(String startCursor) {
+<span class="nc" id="L56">    this.startCursor = startCursor;</span>
+<span class="nc" id="L57">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L61">    return &quot;PageInfo{&quot; + &quot;endCursor='&quot; + endCursor + &quot;',&quot; +&quot;hasNextPage='&quot; + hasNextPage + &quot;',&quot; +&quot;hasPreviousPage='&quot; + hasPreviousPage + &quot;',&quot; +&quot;startCursor='&quot; + startCursor + &quot;'&quot; +&quot;}&quot;;</span>
+  }
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    if (this == o) return true;</span>
+<span class="nc bnc" id="L67" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="nc" id="L68">        PageInfo that = (PageInfo) o;</span>
+<span class="nc bnc" id="L69" title="All 6 branches missed.">        return java.util.Objects.equals(endCursor, that.endCursor) &amp;&amp;</span>
+                            hasNextPage == that.hasNextPage &amp;&amp;
+                            hasPreviousPage == that.hasPreviousPage &amp;&amp;
+<span class="nc bnc" id="L72" title="All 2 branches missed.">                            java.util.Objects.equals(startCursor, that.startCursor);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L77">    return java.util.Objects.hash(endCursor, hasNextPage, hasPreviousPage, startCursor);</span>
+  }
+
+  public static io.spring.graphql.types.PageInfo.Builder newBuilder() {
+<span class="nc" id="L81">    return new Builder();</span>
+  }
+
+<span class="nc" id="L84">  public static class Builder {</span>
+    private String endCursor;
+
+    private boolean hasNextPage;
+
+    private boolean hasPreviousPage;
+
+    private String startCursor;
+
+    public PageInfo build() {
+<span class="nc" id="L94">                  io.spring.graphql.types.PageInfo result = new io.spring.graphql.types.PageInfo();</span>
+<span class="nc" id="L95">                      result.endCursor = this.endCursor;</span>
+<span class="nc" id="L96">          result.hasNextPage = this.hasNextPage;</span>
+<span class="nc" id="L97">          result.hasPreviousPage = this.hasPreviousPage;</span>
+<span class="nc" id="L98">          result.startCursor = this.startCursor;</span>
+<span class="nc" id="L99">                      return result;</span>
+    }
+
+    public io.spring.graphql.types.PageInfo.Builder endCursor(String endCursor) {
+<span class="nc" id="L103">      this.endCursor = endCursor;</span>
+<span class="nc" id="L104">      return this;</span>
+    }
+
+    public io.spring.graphql.types.PageInfo.Builder hasNextPage(boolean hasNextPage) {
+<span class="nc" id="L108">      this.hasNextPage = hasNextPage;</span>
+<span class="nc" id="L109">      return this;</span>
+    }
+
+    public io.spring.graphql.types.PageInfo.Builder hasPreviousPage(boolean hasPreviousPage) {
+<span class="nc" id="L113">      this.hasPreviousPage = hasPreviousPage;</span>
+<span class="nc" id="L114">      return this;</span>
+    }
+
+    public io.spring.graphql.types.PageInfo.Builder startCursor(String startCursor) {
+<span class="nc" id="L118">      this.startCursor = startCursor;</span>
+<span class="nc" id="L119">      return this;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

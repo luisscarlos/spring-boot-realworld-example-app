@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GraphQLCustomizeExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.graphql.exception</a> &gt; <span class="el_source">GraphQLCustomizeExceptionHandler.java</span></div><h1>GraphQLCustomizeExceptionHandler.java</h1><pre class="source lang-java linenums">package io.spring.graphql.exception;
+
+import com.netflix.graphql.dgs.exceptions.DefaultDataFetcherExceptionHandler;
+import com.netflix.graphql.types.errors.ErrorType;
+import com.netflix.graphql.types.errors.TypedGraphQLError;
+import graphql.GraphQLError;
+import graphql.execution.DataFetcherExceptionHandler;
+import graphql.execution.DataFetcherExceptionHandlerParameters;
+import graphql.execution.DataFetcherExceptionHandlerResult;
+import io.spring.api.exception.FieldErrorResource;
+import io.spring.api.exception.InvalidAuthenticationException;
+import io.spring.graphql.types.Error;
+import io.spring.graphql.types.ErrorItem;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="fc" id="L25">public class GraphQLCustomizeExceptionHandler implements DataFetcherExceptionHandler {</span>
+
+<span class="fc" id="L27">  private final DefaultDataFetcherExceptionHandler defaultHandler =</span>
+      new DefaultDataFetcherExceptionHandler();
+
+  @Override
+  public DataFetcherExceptionHandlerResult onException(
+      DataFetcherExceptionHandlerParameters handlerParameters) {
+<span class="nc bnc" id="L33" title="All 2 branches missed.">    if (handlerParameters.getException() instanceof InvalidAuthenticationException) {</span>
+      GraphQLError graphqlError =
+<span class="nc" id="L35">          TypedGraphQLError.newBuilder()</span>
+<span class="nc" id="L36">              .errorType(ErrorType.UNAUTHENTICATED)</span>
+<span class="nc" id="L37">              .message(handlerParameters.getException().getMessage())</span>
+<span class="nc" id="L38">              .path(handlerParameters.getPath())</span>
+<span class="nc" id="L39">              .build();</span>
+<span class="nc" id="L40">      return DataFetcherExceptionHandlerResult.newResult().error(graphqlError).build();</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">    } else if (handlerParameters.getException() instanceof ConstraintViolationException) {</span>
+<span class="nc" id="L42">      List&lt;FieldErrorResource&gt; errors = new ArrayList&lt;&gt;();</span>
+      for (ConstraintViolation&lt;?&gt; violation :
+<span class="nc bnc" id="L44" title="All 2 branches missed.">          ((ConstraintViolationException) handlerParameters.getException())</span>
+<span class="nc" id="L45">              .getConstraintViolations()) {</span>
+<span class="nc" id="L46">        FieldErrorResource fieldErrorResource =</span>
+            new FieldErrorResource(
+<span class="nc" id="L48">                violation.getRootBeanClass().getName(),</span>
+<span class="nc" id="L49">                getParam(violation.getPropertyPath().toString()),</span>
+                violation
+<span class="nc" id="L51">                    .getConstraintDescriptor()</span>
+<span class="nc" id="L52">                    .getAnnotation()</span>
+<span class="nc" id="L53">                    .annotationType()</span>
+<span class="nc" id="L54">                    .getSimpleName(),</span>
+<span class="nc" id="L55">                violation.getMessage());</span>
+<span class="nc" id="L56">        errors.add(fieldErrorResource);</span>
+<span class="nc" id="L57">      }</span>
+      GraphQLError graphqlError =
+<span class="nc" id="L59">          TypedGraphQLError.newBadRequestBuilder()</span>
+<span class="nc" id="L60">              .message(handlerParameters.getException().getMessage())</span>
+<span class="nc" id="L61">              .path(handlerParameters.getPath())</span>
+<span class="nc" id="L62">              .extensions(errorsToMap(errors))</span>
+<span class="nc" id="L63">              .build();</span>
+<span class="nc" id="L64">      return DataFetcherExceptionHandlerResult.newResult().error(graphqlError).build();</span>
+    } else {
+<span class="nc" id="L66">      return defaultHandler.onException(handlerParameters);</span>
+    }
+  }
+
+  public static Error getErrorsAsData(ConstraintViolationException cve) {
+<span class="nc" id="L71">    List&lt;FieldErrorResource&gt; errors = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">    for (ConstraintViolation&lt;?&gt; violation : cve.getConstraintViolations()) {</span>
+<span class="nc" id="L73">      FieldErrorResource fieldErrorResource =</span>
+          new FieldErrorResource(
+<span class="nc" id="L75">              violation.getRootBeanClass().getName(),</span>
+<span class="nc" id="L76">              getParam(violation.getPropertyPath().toString()),</span>
+<span class="nc" id="L77">              violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName(),</span>
+<span class="nc" id="L78">              violation.getMessage());</span>
+<span class="nc" id="L79">      errors.add(fieldErrorResource);</span>
+<span class="nc" id="L80">    }</span>
+<span class="nc" id="L81">    Map&lt;String, List&lt;String&gt;&gt; errorMap = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">    for (FieldErrorResource fieldErrorResource : errors) {</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">      if (!errorMap.containsKey(fieldErrorResource.getField())) {</span>
+<span class="nc" id="L84">        errorMap.put(fieldErrorResource.getField(), new ArrayList&lt;&gt;());</span>
+      }
+<span class="nc" id="L86">      errorMap.get(fieldErrorResource.getField()).add(fieldErrorResource.getMessage());</span>
+<span class="nc" id="L87">    }</span>
+<span class="nc" id="L88">    List&lt;ErrorItem&gt; errorItems =</span>
+<span class="nc" id="L89">        errorMap.entrySet().stream()</span>
+<span class="nc" id="L90">            .map(kv -&gt; ErrorItem.newBuilder().key(kv.getKey()).value(kv.getValue()).build())</span>
+<span class="nc" id="L91">            .collect(Collectors.toList());</span>
+<span class="nc" id="L92">    return Error.newBuilder().message(&quot;BAD_REQUEST&quot;).errors(errorItems).build();</span>
+  }
+
+  private static String getParam(String s) {
+<span class="nc" id="L96">    String[] splits = s.split(&quot;\\.&quot;);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">    if (splits.length == 1) {</span>
+<span class="nc" id="L98">      return s;</span>
+    } else {
+<span class="nc" id="L100">      return String.join(&quot;.&quot;, Arrays.copyOfRange(splits, 2, splits.length));</span>
+    }
+  }
+
+  private static Map&lt;String, Object&gt; errorsToMap(List&lt;FieldErrorResource&gt; errors) {
+<span class="nc" id="L105">    Map&lt;String, Object&gt; json = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">    for (FieldErrorResource fieldErrorResource : errors) {</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">      if (!json.containsKey(fieldErrorResource.getField())) {</span>
+<span class="nc" id="L108">        json.put(fieldErrorResource.getField(), new ArrayList&lt;&gt;());</span>
+      }
+<span class="nc" id="L110">      ((List) json.get(fieldErrorResource.getField())).add(fieldErrorResource.getMessage());</span>
+<span class="nc" id="L111">    }</span>
+<span class="nc" id="L112">    return json;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

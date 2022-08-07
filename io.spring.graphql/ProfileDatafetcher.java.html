@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProfileDatafetcher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.graphql</a> &gt; <span class="el_source">ProfileDatafetcher.java</span></div><h1>ProfileDatafetcher.java</h1><pre class="source lang-java linenums">package io.spring.graphql;
+
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsData;
+import com.netflix.graphql.dgs.InputArgument;
+import graphql.schema.DataFetchingEnvironment;
+import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.ProfileQueryService;
+import io.spring.application.data.ArticleData;
+import io.spring.application.data.CommentData;
+import io.spring.application.data.ProfileData;
+import io.spring.core.user.User;
+import io.spring.graphql.DgsConstants.ARTICLE;
+import io.spring.graphql.DgsConstants.COMMENT;
+import io.spring.graphql.DgsConstants.QUERY;
+import io.spring.graphql.DgsConstants.USER;
+import io.spring.graphql.types.Article;
+import io.spring.graphql.types.Comment;
+import io.spring.graphql.types.Profile;
+import io.spring.graphql.types.ProfilePayload;
+import java.util.Map;
+import lombok.AllArgsConstructor;
+
+@DgsComponent
+<span class="fc" id="L25">@AllArgsConstructor</span>
+public class ProfileDatafetcher {
+
+  private ProfileQueryService profileQueryService;
+
+  @DgsData(parentType = USER.TYPE_NAME, field = USER.Profile)
+  public Profile getUserProfile(DataFetchingEnvironment dataFetchingEnvironment) {
+<span class="nc" id="L32">    User user = dataFetchingEnvironment.getLocalContext();</span>
+<span class="nc" id="L33">    String username = user.getUsername();</span>
+<span class="nc" id="L34">    return queryProfile(username);</span>
+  }
+
+  @DgsData(parentType = ARTICLE.TYPE_NAME, field = ARTICLE.Author)
+  public Profile getAuthor(DataFetchingEnvironment dataFetchingEnvironment) {
+<span class="nc" id="L39">    Map&lt;String, ArticleData&gt; map = dataFetchingEnvironment.getLocalContext();</span>
+<span class="nc" id="L40">    Article article = dataFetchingEnvironment.getSource();</span>
+<span class="nc" id="L41">    return queryProfile(map.get(article.getSlug()).getProfileData().getUsername());</span>
+  }
+
+  @DgsData(parentType = COMMENT.TYPE_NAME, field = COMMENT.Author)
+  public Profile getCommentAuthor(DataFetchingEnvironment dataFetchingEnvironment) {
+<span class="nc" id="L46">    Comment comment = dataFetchingEnvironment.getSource();</span>
+<span class="nc" id="L47">    Map&lt;String, CommentData&gt; map = dataFetchingEnvironment.getLocalContext();</span>
+<span class="nc" id="L48">    return queryProfile(map.get(comment.getId()).getProfileData().getUsername());</span>
+  }
+
+  @DgsData(parentType = DgsConstants.QUERY_TYPE, field = QUERY.Profile)
+  public ProfilePayload queryProfile(
+      @InputArgument(&quot;username&quot;) String username, DataFetchingEnvironment dataFetchingEnvironment) {
+<span class="nc" id="L54">    Profile profile = queryProfile(dataFetchingEnvironment.getArgument(&quot;username&quot;));</span>
+<span class="nc" id="L55">    return ProfilePayload.newBuilder().profile(profile).build();</span>
+  }
+
+  private Profile queryProfile(String username) {
+<span class="nc" id="L59">    User current = SecurityUtil.getCurrentUser().orElse(null);</span>
+<span class="nc" id="L60">    ProfileData profileData =</span>
+        profileQueryService
+<span class="nc" id="L62">            .findByUsername(username, current)</span>
+<span class="nc" id="L63">            .orElseThrow(ResourceNotFoundException::new);</span>
+<span class="nc" id="L64">    return Profile.newBuilder()</span>
+<span class="nc" id="L65">        .username(profileData.getUsername())</span>
+<span class="nc" id="L66">        .bio(profileData.getBio())</span>
+<span class="nc" id="L67">        .image(profileData.getImage())</span>
+<span class="nc" id="L68">        .following(profileData.isFollowing())</span>
+<span class="nc" id="L69">        .build();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

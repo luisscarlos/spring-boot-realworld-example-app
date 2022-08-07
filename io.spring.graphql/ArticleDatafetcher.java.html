@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ArticleDatafetcher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.graphql</a> &gt; <span class="el_source">ArticleDatafetcher.java</span></div><h1>ArticleDatafetcher.java</h1><pre class="source lang-java linenums">package io.spring.graphql;
+
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsData;
+import com.netflix.graphql.dgs.DgsDataFetchingEnvironment;
+import com.netflix.graphql.dgs.DgsQuery;
+import com.netflix.graphql.dgs.InputArgument;
+import graphql.execution.DataFetcherResult;
+import graphql.relay.DefaultConnectionCursor;
+import graphql.relay.DefaultPageInfo;
+import graphql.schema.DataFetchingEnvironment;
+import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.ArticleQueryService;
+import io.spring.application.CursorPageParameter;
+import io.spring.application.CursorPager;
+import io.spring.application.CursorPager.Direction;
+import io.spring.application.DateTimeCursor;
+import io.spring.application.data.ArticleData;
+import io.spring.application.data.CommentData;
+import io.spring.core.user.User;
+import io.spring.core.user.UserRepository;
+import io.spring.graphql.DgsConstants.ARTICLEPAYLOAD;
+import io.spring.graphql.DgsConstants.COMMENT;
+import io.spring.graphql.DgsConstants.PROFILE;
+import io.spring.graphql.DgsConstants.QUERY;
+import io.spring.graphql.types.Article;
+import io.spring.graphql.types.ArticleEdge;
+import io.spring.graphql.types.ArticlesConnection;
+import io.spring.graphql.types.Profile;
+import java.util.HashMap;
+import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import org.joda.time.format.ISODateTimeFormat;
+
+@DgsComponent
+<span class="fc" id="L36">@AllArgsConstructor</span>
+public class ArticleDatafetcher {
+
+  private ArticleQueryService articleQueryService;
+  private UserRepository userRepository;
+
+  @DgsQuery(field = QUERY.Feed)
+  public DataFetcherResult&lt;ArticlesConnection&gt; getFeed(
+      @InputArgument(&quot;first&quot;) Integer first,
+      @InputArgument(&quot;after&quot;) String after,
+      @InputArgument(&quot;last&quot;) Integer last,
+      @InputArgument(&quot;before&quot;) String before,
+      DgsDataFetchingEnvironment dfe) {
+<span class="nc bnc" id="L49" title="All 4 branches missed.">    if (first == null &amp;&amp; last == null) {</span>
+<span class="nc" id="L50">      throw new IllegalArgumentException(&quot;first 和 last 必须只存在一个&quot;);</span>
+    }
+
+<span class="nc" id="L53">    User current = SecurityUtil.getCurrentUser().orElse(null);</span>
+
+    CursorPager&lt;ArticleData&gt; articles;
+<span class="nc bnc" id="L56" title="All 2 branches missed.">    if (first != null) {</span>
+<span class="nc" id="L57">      articles =</span>
+<span class="nc" id="L58">          articleQueryService.findUserFeedWithCursor(</span>
+              current,
+<span class="nc" id="L60">              new CursorPageParameter&lt;&gt;(DateTimeCursor.parse(after), first, Direction.NEXT));</span>
+    } else {
+<span class="nc" id="L62">      articles =</span>
+<span class="nc" id="L63">          articleQueryService.findUserFeedWithCursor(</span>
+              current,
+<span class="nc" id="L65">              new CursorPageParameter&lt;&gt;(DateTimeCursor.parse(before), last, Direction.PREV));</span>
+    }
+<span class="nc" id="L67">    graphql.relay.PageInfo pageInfo = buildArticlePageInfo(articles);</span>
+    ArticlesConnection articlesConnection =
+<span class="nc" id="L69">        ArticlesConnection.newBuilder()</span>
+<span class="nc" id="L70">            .pageInfo(pageInfo)</span>
+<span class="nc" id="L71">            .edges(</span>
+<span class="nc" id="L72">                articles.getData().stream()</span>
+<span class="nc" id="L73">                    .map(</span>
+                        a -&gt;
+<span class="nc" id="L75">                            ArticleEdge.newBuilder()</span>
+<span class="nc" id="L76">                                .cursor(a.getCursor().toString())</span>
+<span class="nc" id="L77">                                .node(buildArticleResult(a))</span>
+<span class="nc" id="L78">                                .build())</span>
+<span class="nc" id="L79">                    .collect(Collectors.toList()))</span>
+<span class="nc" id="L80">            .build();</span>
+<span class="nc" id="L81">    return DataFetcherResult.&lt;ArticlesConnection&gt;newResult()</span>
+<span class="nc" id="L82">        .data(articlesConnection)</span>
+<span class="nc" id="L83">        .localContext(</span>
+<span class="nc" id="L84">            articles.getData().stream().collect(Collectors.toMap(ArticleData::getSlug, a -&gt; a)))</span>
+<span class="nc" id="L85">        .build();</span>
+  }
+
+  @DgsData(parentType = PROFILE.TYPE_NAME, field = PROFILE.Feed)
+  public DataFetcherResult&lt;ArticlesConnection&gt; userFeed(
+      @InputArgument(&quot;first&quot;) Integer first,
+      @InputArgument(&quot;after&quot;) String after,
+      @InputArgument(&quot;last&quot;) Integer last,
+      @InputArgument(&quot;before&quot;) String before,
+      DgsDataFetchingEnvironment dfe) {
+<span class="nc bnc" id="L95" title="All 4 branches missed.">    if (first == null &amp;&amp; last == null) {</span>
+<span class="nc" id="L96">      throw new IllegalArgumentException(&quot;first 和 last 必须只存在一个&quot;);</span>
+    }
+
+<span class="nc" id="L99">    Profile profile = dfe.getSource();</span>
+<span class="nc" id="L100">    User target =</span>
+        userRepository
+<span class="nc" id="L102">            .findByUsername(profile.getUsername())</span>
+<span class="nc" id="L103">            .orElseThrow(ResourceNotFoundException::new);</span>
+
+    CursorPager&lt;ArticleData&gt; articles;
+<span class="nc bnc" id="L106" title="All 2 branches missed.">    if (first != null) {</span>
+<span class="nc" id="L107">      articles =</span>
+<span class="nc" id="L108">          articleQueryService.findUserFeedWithCursor(</span>
+              target,
+<span class="nc" id="L110">              new CursorPageParameter&lt;&gt;(DateTimeCursor.parse(after), first, Direction.NEXT));</span>
+    } else {
+<span class="nc" id="L112">      articles =</span>
+<span class="nc" id="L113">          articleQueryService.findUserFeedWithCursor(</span>
+              target,
+<span class="nc" id="L115">              new CursorPageParameter&lt;&gt;(DateTimeCursor.parse(before), last, Direction.PREV));</span>
+    }
+<span class="nc" id="L117">    graphql.relay.PageInfo pageInfo = buildArticlePageInfo(articles);</span>
+    ArticlesConnection articlesConnection =
+<span class="nc" id="L119">        ArticlesConnection.newBuilder()</span>
+<span class="nc" id="L120">            .pageInfo(pageInfo)</span>
+<span class="nc" id="L121">            .edges(</span>
+<span class="nc" id="L122">                articles.getData().stream()</span>
+<span class="nc" id="L123">                    .map(</span>
+                        a -&gt;
+<span class="nc" id="L125">                            ArticleEdge.newBuilder()</span>
+<span class="nc" id="L126">                                .cursor(a.getCursor().toString())</span>
+<span class="nc" id="L127">                                .node(buildArticleResult(a))</span>
+<span class="nc" id="L128">                                .build())</span>
+<span class="nc" id="L129">                    .collect(Collectors.toList()))</span>
+<span class="nc" id="L130">            .build();</span>
+<span class="nc" id="L131">    return DataFetcherResult.&lt;ArticlesConnection&gt;newResult()</span>
+<span class="nc" id="L132">        .data(articlesConnection)</span>
+<span class="nc" id="L133">        .localContext(</span>
+<span class="nc" id="L134">            articles.getData().stream().collect(Collectors.toMap(ArticleData::getSlug, a -&gt; a)))</span>
+<span class="nc" id="L135">        .build();</span>
+  }
+
+  @DgsData(parentType = PROFILE.TYPE_NAME, field = PROFILE.Favorites)
+  public DataFetcherResult&lt;ArticlesConnection&gt; userFavorites(
+      @InputArgument(&quot;first&quot;) Integer first,
+      @InputArgument(&quot;after&quot;) String after,
+      @InputArgument(&quot;last&quot;) Integer last,
+      @InputArgument(&quot;before&quot;) String before,
+      DgsDataFetchingEnvironment dfe) {
+<span class="nc bnc" id="L145" title="All 4 branches missed.">    if (first == null &amp;&amp; last == null) {</span>
+<span class="nc" id="L146">      throw new IllegalArgumentException(&quot;first 和 last 必须只存在一个&quot;);</span>
+    }
+
+<span class="nc" id="L149">    User current = SecurityUtil.getCurrentUser().orElse(null);</span>
+<span class="nc" id="L150">    Profile profile = dfe.getSource();</span>
+
+    CursorPager&lt;ArticleData&gt; articles;
+<span class="nc bnc" id="L153" title="All 2 branches missed.">    if (first != null) {</span>
+<span class="nc" id="L154">      articles =</span>
+<span class="nc" id="L155">          articleQueryService.findRecentArticlesWithCursor(</span>
+              null,
+              null,
+<span class="nc" id="L158">              profile.getUsername(),</span>
+<span class="nc" id="L159">              new CursorPageParameter&lt;&gt;(DateTimeCursor.parse(after), first, Direction.NEXT),</span>
+              current);
+    } else {
+<span class="nc" id="L162">      articles =</span>
+<span class="nc" id="L163">          articleQueryService.findRecentArticlesWithCursor(</span>
+              null,
+              null,
+<span class="nc" id="L166">              profile.getUsername(),</span>
+<span class="nc" id="L167">              new CursorPageParameter&lt;&gt;(DateTimeCursor.parse(before), last, Direction.PREV),</span>
+              current);
+    }
+<span class="nc" id="L170">    graphql.relay.PageInfo pageInfo = buildArticlePageInfo(articles);</span>
+
+    ArticlesConnection articlesConnection =
+<span class="nc" id="L173">        ArticlesConnection.newBuilder()</span>
+<span class="nc" id="L174">            .pageInfo(pageInfo)</span>
+<span class="nc" id="L175">            .edges(</span>
+<span class="nc" id="L176">                articles.getData().stream()</span>
+<span class="nc" id="L177">                    .map(</span>
+                        a -&gt;
+<span class="nc" id="L179">                            ArticleEdge.newBuilder()</span>
+<span class="nc" id="L180">                                .cursor(a.getCursor().toString())</span>
+<span class="nc" id="L181">                                .node(buildArticleResult(a))</span>
+<span class="nc" id="L182">                                .build())</span>
+<span class="nc" id="L183">                    .collect(Collectors.toList()))</span>
+<span class="nc" id="L184">            .build();</span>
+<span class="nc" id="L185">    return DataFetcherResult.&lt;ArticlesConnection&gt;newResult()</span>
+<span class="nc" id="L186">        .data(articlesConnection)</span>
+<span class="nc" id="L187">        .localContext(</span>
+<span class="nc" id="L188">            articles.getData().stream().collect(Collectors.toMap(ArticleData::getSlug, a -&gt; a)))</span>
+<span class="nc" id="L189">        .build();</span>
+  }
+
+  @DgsData(parentType = PROFILE.TYPE_NAME, field = PROFILE.Articles)
+  public DataFetcherResult&lt;ArticlesConnection&gt; userArticles(
+      @InputArgument(&quot;first&quot;) Integer first,
+      @InputArgument(&quot;after&quot;) String after,
+      @InputArgument(&quot;last&quot;) Integer last,
+      @InputArgument(&quot;before&quot;) String before,
+      DgsDataFetchingEnvironment dfe) {
+<span class="nc bnc" id="L199" title="All 4 branches missed.">    if (first == null &amp;&amp; last == null) {</span>
+<span class="nc" id="L200">      throw new IllegalArgumentException(&quot;first 和 last 必须只存在一个&quot;);</span>
+    }
+
+<span class="nc" id="L203">    User current = SecurityUtil.getCurrentUser().orElse(null);</span>
+<span class="nc" id="L204">    Profile profile = dfe.getSource();</span>
+
+    CursorPager&lt;ArticleData&gt; articles;
+<span class="nc bnc" id="L207" title="All 2 branches missed.">    if (first != null) {</span>
+<span class="nc" id="L208">      articles =</span>
+<span class="nc" id="L209">          articleQueryService.findRecentArticlesWithCursor(</span>
+              null,
+<span class="nc" id="L211">              profile.getUsername(),</span>
+              null,
+<span class="nc" id="L213">              new CursorPageParameter&lt;&gt;(DateTimeCursor.parse(after), first, Direction.NEXT),</span>
+              current);
+    } else {
+<span class="nc" id="L216">      articles =</span>
+<span class="nc" id="L217">          articleQueryService.findRecentArticlesWithCursor(</span>
+              null,
+<span class="nc" id="L219">              profile.getUsername(),</span>
+              null,
+<span class="nc" id="L221">              new CursorPageParameter&lt;&gt;(DateTimeCursor.parse(before), last, Direction.PREV),</span>
+              current);
+    }
+<span class="nc" id="L224">    graphql.relay.PageInfo pageInfo = buildArticlePageInfo(articles);</span>
+    ArticlesConnection articlesConnection =
+<span class="nc" id="L226">        ArticlesConnection.newBuilder()</span>
+<span class="nc" id="L227">            .pageInfo(pageInfo)</span>
+<span class="nc" id="L228">            .edges(</span>
+<span class="nc" id="L229">                articles.getData().stream()</span>
+<span class="nc" id="L230">                    .map(</span>
+                        a -&gt;
+<span class="nc" id="L232">                            ArticleEdge.newBuilder()</span>
+<span class="nc" id="L233">                                .cursor(a.getCursor().toString())</span>
+<span class="nc" id="L234">                                .node(buildArticleResult(a))</span>
+<span class="nc" id="L235">                                .build())</span>
+<span class="nc" id="L236">                    .collect(Collectors.toList()))</span>
+<span class="nc" id="L237">            .build();</span>
+<span class="nc" id="L238">    return DataFetcherResult.&lt;ArticlesConnection&gt;newResult()</span>
+<span class="nc" id="L239">        .data(articlesConnection)</span>
+<span class="nc" id="L240">        .localContext(</span>
+<span class="nc" id="L241">            articles.getData().stream().collect(Collectors.toMap(ArticleData::getSlug, a -&gt; a)))</span>
+<span class="nc" id="L242">        .build();</span>
+  }
+
+  @DgsData(parentType = DgsConstants.QUERY_TYPE, field = QUERY.Articles)
+  public DataFetcherResult&lt;ArticlesConnection&gt; getArticles(
+      @InputArgument(&quot;first&quot;) Integer first,
+      @InputArgument(&quot;after&quot;) String after,
+      @InputArgument(&quot;last&quot;) Integer last,
+      @InputArgument(&quot;before&quot;) String before,
+      @InputArgument(&quot;authoredBy&quot;) String authoredBy,
+      @InputArgument(&quot;favoritedBy&quot;) String favoritedBy,
+      @InputArgument(&quot;withTag&quot;) String withTag,
+      DgsDataFetchingEnvironment dfe) {
+<span class="nc bnc" id="L255" title="All 4 branches missed.">    if (first == null &amp;&amp; last == null) {</span>
+<span class="nc" id="L256">      throw new IllegalArgumentException(&quot;first 和 last 必须只存在一个&quot;);</span>
+    }
+
+<span class="nc" id="L259">    User current = SecurityUtil.getCurrentUser().orElse(null);</span>
+
+    CursorPager&lt;ArticleData&gt; articles;
+<span class="nc bnc" id="L262" title="All 2 branches missed.">    if (first != null) {</span>
+<span class="nc" id="L263">      articles =</span>
+<span class="nc" id="L264">          articleQueryService.findRecentArticlesWithCursor(</span>
+              withTag,
+              authoredBy,
+              favoritedBy,
+<span class="nc" id="L268">              new CursorPageParameter&lt;&gt;(DateTimeCursor.parse(after), first, Direction.NEXT),</span>
+              current);
+    } else {
+<span class="nc" id="L271">      articles =</span>
+<span class="nc" id="L272">          articleQueryService.findRecentArticlesWithCursor(</span>
+              withTag,
+              authoredBy,
+              favoritedBy,
+<span class="nc" id="L276">              new CursorPageParameter&lt;&gt;(DateTimeCursor.parse(before), last, Direction.PREV),</span>
+              current);
+    }
+<span class="nc" id="L279">    graphql.relay.PageInfo pageInfo = buildArticlePageInfo(articles);</span>
+    ArticlesConnection articlesConnection =
+<span class="nc" id="L281">        ArticlesConnection.newBuilder()</span>
+<span class="nc" id="L282">            .pageInfo(pageInfo)</span>
+<span class="nc" id="L283">            .edges(</span>
+<span class="nc" id="L284">                articles.getData().stream()</span>
+<span class="nc" id="L285">                    .map(</span>
+                        a -&gt;
+<span class="nc" id="L287">                            ArticleEdge.newBuilder()</span>
+<span class="nc" id="L288">                                .cursor(a.getCursor().toString())</span>
+<span class="nc" id="L289">                                .node(buildArticleResult(a))</span>
+<span class="nc" id="L290">                                .build())</span>
+<span class="nc" id="L291">                    .collect(Collectors.toList()))</span>
+<span class="nc" id="L292">            .build();</span>
+<span class="nc" id="L293">    return DataFetcherResult.&lt;ArticlesConnection&gt;newResult()</span>
+<span class="nc" id="L294">        .data(articlesConnection)</span>
+<span class="nc" id="L295">        .localContext(</span>
+<span class="nc" id="L296">            articles.getData().stream().collect(Collectors.toMap(ArticleData::getSlug, a -&gt; a)))</span>
+<span class="nc" id="L297">        .build();</span>
+  }
+
+  @DgsData(parentType = ARTICLEPAYLOAD.TYPE_NAME, field = ARTICLEPAYLOAD.Article)
+  public DataFetcherResult&lt;Article&gt; getArticle(DataFetchingEnvironment dfe) {
+<span class="nc" id="L302">    io.spring.core.article.Article article = dfe.getLocalContext();</span>
+
+<span class="nc" id="L304">    User current = SecurityUtil.getCurrentUser().orElse(null);</span>
+<span class="nc" id="L305">    ArticleData articleData =</span>
+        articleQueryService
+<span class="nc" id="L307">            .findById(article.getId(), current)</span>
+<span class="nc" id="L308">            .orElseThrow(ResourceNotFoundException::new);</span>
+<span class="nc" id="L309">    Article articleResult = buildArticleResult(articleData);</span>
+<span class="nc" id="L310">    return DataFetcherResult.&lt;Article&gt;newResult()</span>
+<span class="nc" id="L311">        .localContext(</span>
+<span class="nc" id="L312">            new HashMap&lt;String, Object&gt;() {</span>
+              {
+<span class="nc" id="L314">                put(articleData.getSlug(), articleData);</span>
+<span class="nc" id="L315">              }</span>
+            })
+<span class="nc" id="L317">        .data(articleResult)</span>
+<span class="nc" id="L318">        .build();</span>
+  }
+
+  @DgsData(parentType = COMMENT.TYPE_NAME, field = COMMENT.Article)
+  public DataFetcherResult&lt;Article&gt; getCommentArticle(
+      DataFetchingEnvironment dataFetchingEnvironment) {
+<span class="nc" id="L324">    CommentData comment = dataFetchingEnvironment.getLocalContext();</span>
+<span class="nc" id="L325">    User current = SecurityUtil.getCurrentUser().orElse(null);</span>
+<span class="nc" id="L326">    ArticleData articleData =</span>
+        articleQueryService
+<span class="nc" id="L328">            .findById(comment.getArticleId(), current)</span>
+<span class="nc" id="L329">            .orElseThrow(ResourceNotFoundException::new);</span>
+<span class="nc" id="L330">    Article articleResult = buildArticleResult(articleData);</span>
+<span class="nc" id="L331">    return DataFetcherResult.&lt;Article&gt;newResult()</span>
+<span class="nc" id="L332">        .localContext(</span>
+<span class="nc" id="L333">            new HashMap&lt;String, Object&gt;() {</span>
+              {
+<span class="nc" id="L335">                put(articleData.getSlug(), articleData);</span>
+<span class="nc" id="L336">              }</span>
+            })
+<span class="nc" id="L338">        .data(articleResult)</span>
+<span class="nc" id="L339">        .build();</span>
+  }
+
+  @DgsQuery(field = QUERY.Article)
+  public DataFetcherResult&lt;Article&gt; findArticleBySlug(@InputArgument(&quot;slug&quot;) String slug) {
+<span class="nc" id="L344">    User current = SecurityUtil.getCurrentUser().orElse(null);</span>
+<span class="nc" id="L345">    ArticleData articleData =</span>
+<span class="nc" id="L346">        articleQueryService.findBySlug(slug, current).orElseThrow(ResourceNotFoundException::new);</span>
+<span class="nc" id="L347">    Article articleResult = buildArticleResult(articleData);</span>
+<span class="nc" id="L348">    return DataFetcherResult.&lt;Article&gt;newResult()</span>
+<span class="nc" id="L349">        .localContext(</span>
+<span class="nc" id="L350">            new HashMap&lt;String, Object&gt;() {</span>
+              {
+<span class="nc" id="L352">                put(articleData.getSlug(), articleData);</span>
+<span class="nc" id="L353">              }</span>
+            })
+<span class="nc" id="L355">        .data(articleResult)</span>
+<span class="nc" id="L356">        .build();</span>
+  }
+
+  private DefaultPageInfo buildArticlePageInfo(CursorPager&lt;ArticleData&gt; articles) {
+<span class="nc" id="L360">    return new DefaultPageInfo(</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">        articles.getStartCursor() == null</span>
+<span class="nc" id="L362">            ? null</span>
+<span class="nc" id="L363">            : new DefaultConnectionCursor(articles.getStartCursor().toString()),</span>
+<span class="nc bnc" id="L364" title="All 2 branches missed.">        articles.getEndCursor() == null</span>
+<span class="nc" id="L365">            ? null</span>
+<span class="nc" id="L366">            : new DefaultConnectionCursor(articles.getEndCursor().toString()),</span>
+<span class="nc" id="L367">        articles.hasPrevious(),</span>
+<span class="nc" id="L368">        articles.hasNext());</span>
+  }
+
+  private Article buildArticleResult(ArticleData articleData) {
+<span class="nc" id="L372">    return Article.newBuilder()</span>
+<span class="nc" id="L373">        .body(articleData.getBody())</span>
+<span class="nc" id="L374">        .createdAt(ISODateTimeFormat.dateTime().withZoneUTC().print(articleData.getCreatedAt()))</span>
+<span class="nc" id="L375">        .description(articleData.getDescription())</span>
+<span class="nc" id="L376">        .favorited(articleData.isFavorited())</span>
+<span class="nc" id="L377">        .favoritesCount(articleData.getFavoritesCount())</span>
+<span class="nc" id="L378">        .slug(articleData.getSlug())</span>
+<span class="nc" id="L379">        .tagList(articleData.getTagList())</span>
+<span class="nc" id="L380">        .title(articleData.getTitle())</span>
+<span class="nc" id="L381">        .updatedAt(ISODateTimeFormat.dateTime().withZoneUTC().print(articleData.getUpdatedAt()))</span>
+<span class="nc" id="L382">        .build();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

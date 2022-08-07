@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Profile.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.graphql.types</a> &gt; <span class="el_source">Profile.java</span></div><h1>Profile.java</h1><pre class="source lang-java linenums">package io.spring.graphql.types;
+
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
+
+public class Profile {
+  private String username;
+
+  private String bio;
+
+  private boolean following;
+
+  private String image;
+
+  private ArticlesConnection articles;
+
+  private ArticlesConnection favorites;
+
+  private ArticlesConnection feed;
+
+<span class="nc" id="L22">  public Profile() {</span>
+<span class="nc" id="L23">  }</span>
+
+  public Profile(String username, String bio, boolean following, String image,
+<span class="nc" id="L26">      ArticlesConnection articles, ArticlesConnection favorites, ArticlesConnection feed) {</span>
+<span class="nc" id="L27">    this.username = username;</span>
+<span class="nc" id="L28">    this.bio = bio;</span>
+<span class="nc" id="L29">    this.following = following;</span>
+<span class="nc" id="L30">    this.image = image;</span>
+<span class="nc" id="L31">    this.articles = articles;</span>
+<span class="nc" id="L32">    this.favorites = favorites;</span>
+<span class="nc" id="L33">    this.feed = feed;</span>
+<span class="nc" id="L34">  }</span>
+
+  public String getUsername() {
+<span class="nc" id="L37">    return username;</span>
+  }
+
+  public void setUsername(String username) {
+<span class="nc" id="L41">    this.username = username;</span>
+<span class="nc" id="L42">  }</span>
+
+  public String getBio() {
+<span class="nc" id="L45">    return bio;</span>
+  }
+
+  public void setBio(String bio) {
+<span class="nc" id="L49">    this.bio = bio;</span>
+<span class="nc" id="L50">  }</span>
+
+  public boolean getFollowing() {
+<span class="nc" id="L53">    return following;</span>
+  }
+
+  public void setFollowing(boolean following) {
+<span class="nc" id="L57">    this.following = following;</span>
+<span class="nc" id="L58">  }</span>
+
+  public String getImage() {
+<span class="nc" id="L61">    return image;</span>
+  }
+
+  public void setImage(String image) {
+<span class="nc" id="L65">    this.image = image;</span>
+<span class="nc" id="L66">  }</span>
+
+  public ArticlesConnection getArticles() {
+<span class="nc" id="L69">    return articles;</span>
+  }
+
+  public void setArticles(ArticlesConnection articles) {
+<span class="nc" id="L73">    this.articles = articles;</span>
+<span class="nc" id="L74">  }</span>
+
+  public ArticlesConnection getFavorites() {
+<span class="nc" id="L77">    return favorites;</span>
+  }
+
+  public void setFavorites(ArticlesConnection favorites) {
+<span class="nc" id="L81">    this.favorites = favorites;</span>
+<span class="nc" id="L82">  }</span>
+
+  public ArticlesConnection getFeed() {
+<span class="nc" id="L85">    return feed;</span>
+  }
+
+  public void setFeed(ArticlesConnection feed) {
+<span class="nc" id="L89">    this.feed = feed;</span>
+<span class="nc" id="L90">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L94">    return &quot;Profile{&quot; + &quot;username='&quot; + username + &quot;',&quot; +&quot;bio='&quot; + bio + &quot;',&quot; +&quot;following='&quot; + following + &quot;',&quot; +&quot;image='&quot; + image + &quot;',&quot; +&quot;articles='&quot; + articles + &quot;',&quot; +&quot;favorites='&quot; + favorites + &quot;',&quot; +&quot;feed='&quot; + feed + &quot;'&quot; +&quot;}&quot;;</span>
+  }
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L99" title="All 2 branches missed.">    if (this == o) return true;</span>
+<span class="nc bnc" id="L100" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="nc" id="L101">        Profile that = (Profile) o;</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        return java.util.Objects.equals(username, that.username) &amp;&amp;</span>
+<span class="nc bnc" id="L103" title="All 4 branches missed.">                            java.util.Objects.equals(bio, that.bio) &amp;&amp;</span>
+                            following == that.following &amp;&amp;
+<span class="nc bnc" id="L105" title="All 2 branches missed.">                            java.util.Objects.equals(image, that.image) &amp;&amp;</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">                            java.util.Objects.equals(articles, that.articles) &amp;&amp;</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                            java.util.Objects.equals(favorites, that.favorites) &amp;&amp;</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">                            java.util.Objects.equals(feed, that.feed);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L113">    return java.util.Objects.hash(username, bio, following, image, articles, favorites, feed);</span>
+  }
+
+  public static io.spring.graphql.types.Profile.Builder newBuilder() {
+<span class="nc" id="L117">    return new Builder();</span>
+  }
+
+<span class="nc" id="L120">  public static class Builder {</span>
+    private String username;
+
+    private String bio;
+
+    private boolean following;
+
+    private String image;
+
+    private ArticlesConnection articles;
+
+    private ArticlesConnection favorites;
+
+    private ArticlesConnection feed;
+
+    public Profile build() {
+<span class="nc" id="L136">                  io.spring.graphql.types.Profile result = new io.spring.graphql.types.Profile();</span>
+<span class="nc" id="L137">                      result.username = this.username;</span>
+<span class="nc" id="L138">          result.bio = this.bio;</span>
+<span class="nc" id="L139">          result.following = this.following;</span>
+<span class="nc" id="L140">          result.image = this.image;</span>
+<span class="nc" id="L141">          result.articles = this.articles;</span>
+<span class="nc" id="L142">          result.favorites = this.favorites;</span>
+<span class="nc" id="L143">          result.feed = this.feed;</span>
+<span class="nc" id="L144">                      return result;</span>
+    }
+
+    public io.spring.graphql.types.Profile.Builder username(String username) {
+<span class="nc" id="L148">      this.username = username;</span>
+<span class="nc" id="L149">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Profile.Builder bio(String bio) {
+<span class="nc" id="L153">      this.bio = bio;</span>
+<span class="nc" id="L154">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Profile.Builder following(boolean following) {
+<span class="nc" id="L158">      this.following = following;</span>
+<span class="nc" id="L159">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Profile.Builder image(String image) {
+<span class="nc" id="L163">      this.image = image;</span>
+<span class="nc" id="L164">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Profile.Builder articles(ArticlesConnection articles) {
+<span class="nc" id="L168">      this.articles = articles;</span>
+<span class="nc" id="L169">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Profile.Builder favorites(ArticlesConnection favorites) {
+<span class="nc" id="L173">      this.favorites = favorites;</span>
+<span class="nc" id="L174">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Profile.Builder feed(ArticlesConnection feed) {
+<span class="nc" id="L178">      this.feed = feed;</span>
+<span class="nc" id="L179">      return this;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

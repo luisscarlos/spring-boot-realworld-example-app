@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProfileQueryService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.application</a> &gt; <span class="el_source">ProfileQueryService.java</span></div><h1>ProfileQueryService.java</h1><pre class="source lang-java linenums">package io.spring.application;
+
+import io.spring.application.data.ProfileData;
+import io.spring.application.data.UserData;
+import io.spring.core.user.User;
+import io.spring.infrastructure.mybatis.readservice.UserReadService;
+import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
+import java.util.Optional;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="fc" id="L13">@AllArgsConstructor</span>
+public class ProfileQueryService {
+  private UserReadService userReadService;
+  private UserRelationshipQueryService userRelationshipQueryService;
+
+  public Optional&lt;ProfileData&gt; findByUsername(String username, User currentUser) {
+<span class="fc" id="L19">    UserData userData = userReadService.findByUsername(username);</span>
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">    if (userData == null) {</span>
+<span class="nc" id="L21">      return Optional.empty();</span>
+    } else {
+<span class="fc" id="L23">      ProfileData profileData =</span>
+          new ProfileData(
+<span class="fc" id="L25">              userData.getId(),</span>
+<span class="fc" id="L26">              userData.getUsername(),</span>
+<span class="fc" id="L27">              userData.getBio(),</span>
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">              userData.getImage(),</span>
+              currentUser != null
+<span class="pc bpc" id="L30" title="1 of 2 branches missed.">                  &amp;&amp; userRelationshipQueryService.isUserFollowing(</span>
+<span class="fc" id="L31">                      currentUser.getId(), userData.getId()));</span>
+<span class="fc" id="L32">      return Optional.of(profileData);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

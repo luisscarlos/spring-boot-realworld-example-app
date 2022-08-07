@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DgsConstants.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.graphql</a> &gt; <span class="el_source">DgsConstants.java</span></div><h1>DgsConstants.java</h1><pre class="source lang-java linenums">package io.spring.graphql;
+
+import java.lang.String;
+
+<span class="nc" id="L5">public class DgsConstants {</span>
+  public static final String QUERY_TYPE = &quot;Query&quot;;
+
+<span class="nc" id="L8">  public static class QUERY {</span>
+    public static final String TYPE_NAME = &quot;Query&quot;;
+
+    public static final String Article = &quot;article&quot;;
+
+    public static final String Articles = &quot;articles&quot;;
+
+    public static final String Me = &quot;me&quot;;
+
+    public static final String Feed = &quot;feed&quot;;
+
+    public static final String Profile = &quot;profile&quot;;
+
+    public static final String Tags = &quot;tags&quot;;
+  }
+
+<span class="nc" id="L24">  public static class MUTATION {</span>
+    public static final String TYPE_NAME = &quot;Mutation&quot;;
+
+    public static final String CreateUser = &quot;createUser&quot;;
+
+    public static final String Login = &quot;login&quot;;
+
+    public static final String UpdateUser = &quot;updateUser&quot;;
+
+    public static final String FollowUser = &quot;followUser&quot;;
+
+    public static final String UnfollowUser = &quot;unfollowUser&quot;;
+
+    public static final String CreateArticle = &quot;createArticle&quot;;
+
+    public static final String UpdateArticle = &quot;updateArticle&quot;;
+
+    public static final String FavoriteArticle = &quot;favoriteArticle&quot;;
+
+    public static final String UnfavoriteArticle = &quot;unfavoriteArticle&quot;;
+
+    public static final String DeleteArticle = &quot;deleteArticle&quot;;
+
+    public static final String AddComment = &quot;addComment&quot;;
+
+    public static final String DeleteComment = &quot;deleteComment&quot;;
+  }
+
+<span class="nc" id="L52">  public static class ARTICLE {</span>
+    public static final String TYPE_NAME = &quot;Article&quot;;
+
+    public static final String Author = &quot;author&quot;;
+
+    public static final String Body = &quot;body&quot;;
+
+    public static final String Comments = &quot;comments&quot;;
+
+    public static final String CreatedAt = &quot;createdAt&quot;;
+
+    public static final String Description = &quot;description&quot;;
+
+    public static final String Favorited = &quot;favorited&quot;;
+
+    public static final String FavoritesCount = &quot;favoritesCount&quot;;
+
+    public static final String Slug = &quot;slug&quot;;
+
+    public static final String TagList = &quot;tagList&quot;;
+
+    public static final String Title = &quot;title&quot;;
+
+    public static final String UpdatedAt = &quot;updatedAt&quot;;
+  }
+
+<span class="nc" id="L78">  public static class ARTICLEEDGE {</span>
+    public static final String TYPE_NAME = &quot;ArticleEdge&quot;;
+
+    public static final String Cursor = &quot;cursor&quot;;
+
+    public static final String Node = &quot;node&quot;;
+  }
+
+<span class="nc" id="L86">  public static class ARTICLESCONNECTION {</span>
+    public static final String TYPE_NAME = &quot;ArticlesConnection&quot;;
+
+    public static final String Edges = &quot;edges&quot;;
+
+    public static final String PageInfo = &quot;pageInfo&quot;;
+  }
+
+<span class="nc" id="L94">  public static class COMMENT {</span>
+    public static final String TYPE_NAME = &quot;Comment&quot;;
+
+    public static final String Id = &quot;id&quot;;
+
+    public static final String Author = &quot;author&quot;;
+
+    public static final String Article = &quot;article&quot;;
+
+    public static final String Body = &quot;body&quot;;
+
+    public static final String CreatedAt = &quot;createdAt&quot;;
+
+    public static final String UpdatedAt = &quot;updatedAt&quot;;
+  }
+
+<span class="nc" id="L110">  public static class COMMENTEDGE {</span>
+    public static final String TYPE_NAME = &quot;CommentEdge&quot;;
+
+    public static final String Cursor = &quot;cursor&quot;;
+
+    public static final String Node = &quot;node&quot;;
+  }
+
+<span class="nc" id="L118">  public static class COMMENTSCONNECTION {</span>
+    public static final String TYPE_NAME = &quot;CommentsConnection&quot;;
+
+    public static final String Edges = &quot;edges&quot;;
+
+    public static final String PageInfo = &quot;pageInfo&quot;;
+  }
+
+<span class="nc" id="L126">  public static class DELETIONSTATUS {</span>
+    public static final String TYPE_NAME = &quot;DeletionStatus&quot;;
+
+    public static final String Success = &quot;success&quot;;
+  }
+
+<span class="nc" id="L132">  public static class PAGEINFO {</span>
+    public static final String TYPE_NAME = &quot;PageInfo&quot;;
+
+    public static final String EndCursor = &quot;endCursor&quot;;
+
+    public static final String HasNextPage = &quot;hasNextPage&quot;;
+
+    public static final String HasPreviousPage = &quot;hasPreviousPage&quot;;
+
+    public static final String StartCursor = &quot;startCursor&quot;;
+  }
+
+<span class="nc" id="L144">  public static class PROFILE {</span>
+    public static final String TYPE_NAME = &quot;Profile&quot;;
+
+    public static final String Username = &quot;username&quot;;
+
+    public static final String Bio = &quot;bio&quot;;
+
+    public static final String Following = &quot;following&quot;;
+
+    public static final String Image = &quot;image&quot;;
+
+    public static final String Articles = &quot;articles&quot;;
+
+    public static final String Favorites = &quot;favorites&quot;;
+
+    public static final String Feed = &quot;feed&quot;;
+  }
+
+<span class="nc" id="L162">  public static class USER {</span>
+    public static final String TYPE_NAME = &quot;User&quot;;
+
+    public static final String Email = &quot;email&quot;;
+
+    public static final String Profile = &quot;profile&quot;;
+
+    public static final String Token = &quot;token&quot;;
+
+    public static final String Username = &quot;username&quot;;
+  }
+
+<span class="nc" id="L174">  public static class ERROR {</span>
+    public static final String TYPE_NAME = &quot;Error&quot;;
+
+    public static final String Message = &quot;message&quot;;
+
+    public static final String Errors = &quot;errors&quot;;
+  }
+
+<span class="nc" id="L182">  public static class ERRORITEM {</span>
+    public static final String TYPE_NAME = &quot;ErrorItem&quot;;
+
+    public static final String Key = &quot;key&quot;;
+
+    public static final String Value = &quot;value&quot;;
+  }
+
+<span class="nc" id="L190">  public static class ARTICLEPAYLOAD {</span>
+    public static final String TYPE_NAME = &quot;ArticlePayload&quot;;
+
+    public static final String Article = &quot;article&quot;;
+  }
+
+<span class="nc" id="L196">  public static class COMMENTPAYLOAD {</span>
+    public static final String TYPE_NAME = &quot;CommentPayload&quot;;
+
+    public static final String Comment = &quot;comment&quot;;
+  }
+
+<span class="nc" id="L202">  public static class USERPAYLOAD {</span>
+    public static final String TYPE_NAME = &quot;UserPayload&quot;;
+
+    public static final String User = &quot;user&quot;;
+  }
+
+<span class="nc" id="L208">  public static class PROFILEPAYLOAD {</span>
+    public static final String TYPE_NAME = &quot;ProfilePayload&quot;;
+
+    public static final String Profile = &quot;profile&quot;;
+  }
+
+<span class="nc" id="L214">  public static class UPDATEARTICLEINPUT {</span>
+    public static final String TYPE_NAME = &quot;UpdateArticleInput&quot;;
+
+    public static final String Body = &quot;body&quot;;
+
+    public static final String Description = &quot;description&quot;;
+
+    public static final String Title = &quot;title&quot;;
+  }
+
+<span class="nc" id="L224">  public static class CREATEARTICLEINPUT {</span>
+    public static final String TYPE_NAME = &quot;CreateArticleInput&quot;;
+
+    public static final String Body = &quot;body&quot;;
+
+    public static final String Description = &quot;description&quot;;
+
+    public static final String TagList = &quot;tagList&quot;;
+
+    public static final String Title = &quot;title&quot;;
+  }
+
+<span class="nc" id="L236">  public static class CREATEUSERINPUT {</span>
+    public static final String TYPE_NAME = &quot;CreateUserInput&quot;;
+
+    public static final String Email = &quot;email&quot;;
+
+    public static final String Username = &quot;username&quot;;
+
+    public static final String Password = &quot;password&quot;;
+  }
+
+<span class="nc" id="L246">  public static class UPDATEUSERINPUT {</span>
+    public static final String TYPE_NAME = &quot;UpdateUserInput&quot;;
+
+    public static final String Email = &quot;email&quot;;
+
+    public static final String Username = &quot;username&quot;;
+
+    public static final String Password = &quot;password&quot;;
+
+    public static final String Image = &quot;image&quot;;
+
+    public static final String Bio = &quot;bio&quot;;
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

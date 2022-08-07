@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Error.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-realworld-example-app</a> &gt; <a href="index.source.html" class="el_package">io.spring.graphql.types</a> &gt; <span class="el_source">Error.java</span></div><h1>Error.java</h1><pre class="source lang-java linenums">package io.spring.graphql.types;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
+import java.util.List;
+
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NONE
+)
+public class Error implements UserResult {
+  private String message;
+
+  private List&lt;ErrorItem&gt; errors;
+
+<span class="nc" id="L17">  public Error() {</span>
+<span class="nc" id="L18">  }</span>
+
+<span class="nc" id="L20">  public Error(String message, List&lt;ErrorItem&gt; errors) {</span>
+<span class="nc" id="L21">    this.message = message;</span>
+<span class="nc" id="L22">    this.errors = errors;</span>
+<span class="nc" id="L23">  }</span>
+
+  public String getMessage() {
+<span class="nc" id="L26">    return message;</span>
+  }
+
+  public void setMessage(String message) {
+<span class="nc" id="L30">    this.message = message;</span>
+<span class="nc" id="L31">  }</span>
+
+  public List&lt;ErrorItem&gt; getErrors() {
+<span class="nc" id="L34">    return errors;</span>
+  }
+
+  public void setErrors(List&lt;ErrorItem&gt; errors) {
+<span class="nc" id="L38">    this.errors = errors;</span>
+<span class="nc" id="L39">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L43">    return &quot;Error{&quot; + &quot;message='&quot; + message + &quot;',&quot; +&quot;errors='&quot; + errors + &quot;'&quot; +&quot;}&quot;;</span>
+  }
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L48" title="All 2 branches missed.">    if (this == o) return true;</span>
+<span class="nc bnc" id="L49" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="nc" id="L50">        Error that = (Error) o;</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        return java.util.Objects.equals(message, that.message) &amp;&amp;</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">                            java.util.Objects.equals(errors, that.errors);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L57">    return java.util.Objects.hash(message, errors);</span>
+  }
+
+  public static io.spring.graphql.types.Error.Builder newBuilder() {
+<span class="nc" id="L61">    return new Builder();</span>
+  }
+
+<span class="nc" id="L64">  public static class Builder {</span>
+    private String message;
+
+    private List&lt;ErrorItem&gt; errors;
+
+    public Error build() {
+<span class="nc" id="L70">                  io.spring.graphql.types.Error result = new io.spring.graphql.types.Error();</span>
+<span class="nc" id="L71">                      result.message = this.message;</span>
+<span class="nc" id="L72">          result.errors = this.errors;</span>
+<span class="nc" id="L73">                      return result;</span>
+    }
+
+    public io.spring.graphql.types.Error.Builder message(String message) {
+<span class="nc" id="L77">      this.message = message;</span>
+<span class="nc" id="L78">      return this;</span>
+    }
+
+    public io.spring.graphql.types.Error.Builder errors(List&lt;ErrorItem&gt; errors) {
+<span class="nc" id="L82">      this.errors = errors;</span>
+<span class="nc" id="L83">      return this;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
