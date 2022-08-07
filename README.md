@@ -1,6 +1,7 @@
 # ![RealWorld Example App using Kotlin and Spring](example-logo.png)
 
-[![Actions](https://github.com/gothinkster/spring-boot-realworld-example-app/workflows/Java%20CI/badge.svg)](https://github.com/gothinkster/spring-boot-realworld-example-app/actions)
+[![Java CI](https://github.com/drakulavich/spring-boot-realworld-example-app/actions/workflows/gradle.yml/badge.svg)](https://github.com/drakulavich/spring-boot-realworld-example-app/actions/workflows/gradle.yml)
+[![Test Coverage](https://github.com/drakulavich/spring-boot-realworld-example-app/blob/gh-pages/badges/jacoco.svg?raw=true)](https://drakulavich.github.io/spring-boot-realworld-example-app/)
 
 > ### Spring boot + MyBatis codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) spec and API.
 
